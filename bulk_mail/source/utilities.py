@@ -4,26 +4,41 @@ from email.mime.multipart import MIMEMultipart
 
 
 def send_mail(sender_email, password, contacts, subject,\
-              salutation, body_plain, body_html, html, pause):
-
-    if(sender_email.split('@')[1] == 'gmail.com'):
-        smtp_server = "smtp.gmail.com"
-    elif(sender_email.split('@')[1] == 'outlook.com' or 'live.com' or 'hotmail.com'):
-        smtp_server = "smtp-mail.outlook.com"
-    else: 
-        print('Email id domain unknown')
-        return -1
+              salutation, body_plain, body_html, html, pause, domain):
     
-    port = 587
-    context = ssl.create_default_context()
+    #Check for email id domain for connecting to right smtp_server
+    if (domain == 'auto'):
+        #If domain is auto, email id should have ending gmail.com or outlook.com
+        if(sender_email.split('@')[1] == 'gmail.com'):
+            smtp_server = "smtp.gmail.com"
+        elif(sender_email.split('@')[1] == 'outlook.com'):
+            smtp_server = "smtp-mail.outlook.com"
+        else: 
+            print('Email id domain unknown, please CHECK spelling or enter CORRECT email id')
+            return -1
+    
+    elif (domain == 'gmail' or domain == 'outlook'):
+        #if custom domain is used, email id should be from outlook/Microsoft and gmail/gsuite
+        if(domain == 'gmail'):
+            smtp_server = "smtp.gmail.com"
+        else :
+            smtp_server = "smtp-mail.outlook.com"
+            
+    else:
+        print('Email id domain unknown, please CHECK spelling or enter CORRECT email id')
+        return -1        
+    
+    
+    port = 587 # For starttls
+    context = ssl.create_default_context() # Create a secure SSL context
     
     try:
         server = smtplib.SMTP(smtp_server,port)
-        server.ehlo() # Can be omitted
+        server.ehlo() 
         server.starttls(context=context) # Secure the connection
-        server.ehlo() # Can be omitted
+        server.ehlo() 
         server.login(sender_email, password)    
-        print('Authentication successful')
+        print('Authentication successful, Logged in')
         for i in range(len(contacts)):
             tic = time.time()
             
@@ -42,8 +57,8 @@ def send_mail(sender_email, password, contacts, subject,\
             message.attach(part1)
             
             if(html == True):
-                html = salutation+' '+receiver_name+',\n\n'+body_html
-                part2 = MIMEText(html, "html")
+                html_doc = salutation+' '+receiver_name+',\n\n'+body_html
+                part2 = MIMEText(html_doc, "html")
                 message.attach(part2)
             
     

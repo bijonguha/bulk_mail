@@ -9,7 +9,7 @@ import pandas as pd
 import os
 
 def main(sender_email, password, receiver_file, subject_file, salutation,\
-         body_plain, body_html, html_flag, pause):
+         body_plain, body_html, html_flag, pause, domain):
     
     contacts = pd.read_excel(os.path.join('data',receiver_file))    
     subject = open(os.path.join('data',subject_file), "r").read()
@@ -22,7 +22,7 @@ def main(sender_email, password, receiver_file, subject_file, salutation,\
         html = True
 
     send_mail(sender_email, password, contacts, subject,\
-          salutation, body_plain, body_html, html, pause)
+          salutation, body_plain, body_html, html, pause, domain)
         
 if __name__ == "__main__":
     import argparse
@@ -36,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument('-bod_h','--body_html', default='body_html.txt', help='html body of Message')
     parser.add_argument('-html','--html', default = 'False', help = 'True if msg is html format')
     parser.add_argument('-p','--pause', default = 6, type= int, help = 'Pause timing between each email')
+    parser.add_argument('-dom','--domain', default = 'auto', help = 'Specify domain of email')
     
     args = parser.parse_args()
     
@@ -48,9 +49,10 @@ if __name__ == "__main__":
     html_flag = args.html
     salutation = args.salutation
     pause = args.pause
+    domain = args.domain
     
     main(sender_email, password, receiver_file, subject_file, salutation,\
-         body_plain, body_html, html_flag, pause)
+         body_plain, body_html, html_flag, pause, domain)
 
     
     
