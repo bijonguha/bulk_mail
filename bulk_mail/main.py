@@ -28,9 +28,10 @@ def main(sender_email, password, receiver_file, salutation_plain, signature_plai
         
 if __name__ == "__main__":
     import argparse
+    import getpass
     parser = argparse.ArgumentParser()
     parser.add_argument('sender',metavar='SENDER', help='Sender email address')
-    parser.add_argument('password',metavar='PASSWORD', help='Password of sender')
+    #parser.add_argument('password',metavar='PASSWORD', help='Password of sender')
     parser.add_argument('-re','--receiver', default='contacts.xlsx', help='Receiver excel file')
     parser.add_argument('-salP','--salutationP',default='salutation_plain.txt', \
                         help='Plain Salutation for beginning Message')
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     sender_email = args.sender
-    password = args.password
+    password = getpass.getpass()
     receiver_file = args.receiver
     body_plain = args.bodyP
     body_html = args.bodyH
