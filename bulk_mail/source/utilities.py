@@ -36,16 +36,23 @@ def send_mail(sender_email, password, contacts, salutation_plain, body_plain, si
         server = smtplib.SMTP(smtp_server,port)
         server.ehlo() 
         server.starttls(context=context) # Secure the connection
-        server.ehlo() 
+        server.ehlo()
+
         server.login(sender_email, password)    
         print('Authentication successful, Logged in')
+
         for i in range(len(contacts)):
             tic = time.time()
             
-            receiver_email = contacts.loc[i,'email']# Enter receiver address
-            receiver_name = contacts.loc[i,'name']
-            print('Sending email to %s' %receiver_email)
+            try:
+                receiver_email = contacts.loc[i,'email']# Enter receiver address
+                receiver_name = contacts.loc[i,'name']
+                print('Sending email to %s' %receiver_email)
             
+            except:
+                print('Invalid name/email encountered at loc %d in excel' %i)
+                continue
+
             message = MIMEMultipart("alternative")
             message["Subject"] = contacts.loc[i,'subject'] #subject of email
             message["From"] = sender_email
@@ -68,12 +75,16 @@ def send_mail(sender_email, password, contacts, salutation_plain, body_plain, si
             server.sendmail(sender_email, receiver_email, message.as_string())
             time.sleep(pause)
             print('email sent !',time.time()-tic)
-            
+
+        server.quit()
+        return
+           
     except Exception as e:
         # Print any error messages to stdout
         print(e)
-    finally:
-        server.quit() 
+        print('Unable to Connect with Server Or Authentication issue -> Please try again with correct username password')
+        return
+
 
 
     
