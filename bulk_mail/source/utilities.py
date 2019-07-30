@@ -3,8 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-def send_mail(sender_email, password, contacts, subject,\
-              salutation, body_plain, body_html, html, pause, domain):
+def send_mail(sender_email, password, contacts, salutation_plain, body_plain, signature_plain,\
+              salutation_html, body_html, signature_html, html, pause, domain):
     
     #Check for email id domain for connecting to right smtp_server
     if (domain == 'auto'):
@@ -47,17 +47,20 @@ def send_mail(sender_email, password, contacts, subject,\
             print('Sending email to %s' %receiver_email)
             
             message = MIMEMultipart("alternative")
-            message["Subject"] = subject #subject of email
+            message["Subject"] = contacts.loc[i,'subject'] #subject of email
             message["From"] = sender_email
             message["To"] = receiver_email
-
+            
             # Create the plain-text and HTML version of your message
-            text = salutation+' '+receiver_name+',\n\n'+body_plain
+            text = salutation_plain.format(name=receiver_name)+'\n\n'+body_plain+'\n\n'+\
+                                                                signature_plain
             part1 = MIMEText(text, "plain")
             message.attach(part1)
             
             if(html == True):
-                html_doc = salutation+' '+receiver_name+',\n\n'+body_html
+                
+                html_doc = salutation_html.format(name=receiver_name)+'\n\n'+body_html+\
+                                                         '\n\n'+ signature_html      
                 part2 = MIMEText(html_doc, "html")
                 message.attach(part2)
             
