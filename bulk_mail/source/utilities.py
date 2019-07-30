@@ -2,7 +2,6 @@ import smtplib, ssl, time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-
 def send_mail(sender_email, password, contacts, salutation_plain, body_plain, signature_plain,\
               salutation_html, body_html, signature_html, html, pause, domain):
     
@@ -44,14 +43,9 @@ def send_mail(sender_email, password, contacts, salutation_plain, body_plain, si
         for i in range(len(contacts)):
             tic = time.time()
             
-            try:
-                receiver_email = contacts.loc[i,'email']# Enter receiver address
-                receiver_name = contacts.loc[i,'name']
-                print('Sending email to %s' %receiver_email)
-            
-            except:
-                print('Invalid name/email encountered at loc %d in excel' %i)
-                continue
+            receiver_email = contacts.loc[i,'email']# Enter receiver address
+            receiver_name = contacts.loc[i,'name']
+            print('Sending email to %s' %receiver_email)
 
             message = MIMEMultipart("alternative")
             message["Subject"] = contacts.loc[i,'subject'] #subject of email
@@ -71,8 +65,12 @@ def send_mail(sender_email, password, contacts, salutation_plain, body_plain, si
                 part2 = MIMEText(html_doc, "html")
                 message.attach(part2)
             
-    
-            server.sendmail(sender_email, receiver_email, message.as_string())
+            try:
+                server.sendmail(sender_email, receiver_email, message.as_string())
+            except:
+                print('Bad email id encountered at %d, Please check' %i)
+                continue
+            
             time.sleep(pause)
             print('email sent !',time.time()-tic)
 
