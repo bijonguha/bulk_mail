@@ -1,0 +1,1 @@
+<p style="margin-bottom: .0001pt; line-height: normal; background: white;"><strong><span style="font-family: 'Arial',sans-serif; color: #222222;">Dear Doctor {name},</span></strong></p>
