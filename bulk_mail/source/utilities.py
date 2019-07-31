@@ -27,7 +27,7 @@ def send_mail(sender_email, password, contacts, salutation_html, body_html, \
             
     else:
         print('Email id domain unknown, please CHECK spelling or enter CORRECT email id')
-        return -1        
+        return -1       
     
     
     port = 587 # For starttls
@@ -80,13 +80,29 @@ def send_mail(sender_email, password, contacts, salutation_html, body_html, \
         server.quit()
         df_logs = pd.DataFrame(res_logs)
         df_logs.columns = ['email', 'name', 'status']
-        return df_logs,1
+        
+        l = len(df_logs)
+        
+        df_logs.loc[l,'email'] = ' '
+        df_logs.loc[l,'name'] = ' '
+        
+        df_logs.loc[l+1,'email'] = 'Sender'
+        df_logs.loc[l+1,'name'] = sender_email
+    
+        from datetime import datetime
+        import os
+        
+        date_time = datetime.now().strftime("%m%d%Y%H%M%S")
+        filename = date_time+'.csv'
+        df_logs.to_csv(os.path.join('results',filename), index = False)
+            
+        return 1
            
     except Exception as e:
         # Print any error messages to stdout
         print(e)
         print('Unable to Connect with Server Or Authentication issue -> Please try again with correct username password')
-        return 0,0
+        return 0
 
 
 

@@ -45,18 +45,5 @@ if __name__ == "__main__":
     pause = args.pause
     domain = args.domain
     
-    df_logs,state = main(sender_email, password, receiver_file, salutation_html, signature_html,\
-                                                      body_html, pause, domain)
-
-    if(state):
-        l = len(df_logs)
-
-        df_logs.loc[l,'email'] = 'Sender'
-        df_logs.loc[l,'name'] = sender_email
-
-        from datetime import datetime
-        date_time = now.strftime("%m/%d/%Y/%H:%M:%S")
-        filename = date_time+'.csv'
-        df_logs.to_csv(os.path.join('results',date_time))
-    
+    main(sender_email, password, receiver_file, salutation_html, signature_html, body_html, pause, domain)   
     
