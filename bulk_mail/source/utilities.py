@@ -2,9 +2,9 @@ import smtplib, ssl, time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import pandas as pd
+import os as ps
 
-def send_mail(sender_email, password, contacts, salutation_html, body_html, \
-                                          signature_html, pause, domain):
+def send_mail(sender_email, password, contacts, pause, domain):
     
     res_logs = []
     #Check for email id domain for connecting to right smtp_server
@@ -58,6 +58,10 @@ def send_mail(sender_email, password, contacts, salutation_html, body_html, \
             message["Subject"] = contacts.loc[i,'subject'] #subject of email
             message["From"] = sender_email
             message["To"] = receiver_email
+            
+            body_html = open(ps.path.join('data', 'html', contacts.loc[i,'body_html']), "r").read()
+            salutation_html = open(ps.path.join('data','html',contacts.loc[i,'salutation_html']), "r").read()
+            signature_html = open(ps.path.join('data','html',contacts.loc[i,'signature_html']), "r").read()          
             
             # HTML version of your message
             html_doc = salutation_html.format(name=receiver_name)+'\n\n'+body_html+\
